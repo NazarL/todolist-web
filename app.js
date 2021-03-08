@@ -29,11 +29,12 @@ const defaultItems = [item1, item2, item3];
 //Home route
 app.get("/", function(req, res){
 
+    //[To-do]: add date to non work listTitle
     Item.find({}, function(err, foundItems) {
         if (err) {
             console.log(err)
         } else {
-            //if default items array is 0 -> create items to display
+            //if default items array length is 0 -> create items to display
             if (foundItems.length === 0) {
                 Item.insertMany(defaultItems, function(err){
                     if(err) {
@@ -42,6 +43,7 @@ app.get("/", function(req, res){
                         console.log("Documents were added successfully!");
                     }
                 });
+                res.redirect("/");
             } else {
                 //render array items
                 res.render("list", {
@@ -52,7 +54,6 @@ app.get("/", function(req, res){
         }
     })
 
-    //[To-do]: add date 
     //const day = date.getDate();
 
     //should render all variables simultaneously
@@ -69,23 +70,40 @@ app.get("/", function(req, res){
 });
 
 app.post("/", function(req, res){
+    const itemName = req.body.newItem;
 
-    const item = req.body.newItem;
+    const item = new Item({
+        name: itemName
+    });
 
-    //check for the correct list to add new item
-    if (req.body.list === "Work") {
-        workItems.push(item);
-        res.redirect("/work");
-    } else {
-        items.push(item);
-        res.redirect("/");
-    }
+    item.save();
+    res.redirect("/");
 
+    // //check for the correct list to add new item
+    // if (req.body.list === "Work") {
+    //     workItems.push(item);
+    //     res.redirect("/work");
+    // } else {
+    //     items.push(item);
+    //     res.redirect("/");
+    // }
+
+});
+
+app.post("/delete", function(req, res){
+    const checkedItemId = req.body.checkbox;
+
+    //[ToDo] find new delete method to remove deprecation warning
+    Item.findByIdAndRemove(checkedItemId, function(err) {
+        if (!err) {
+            console.log("Item deleted successfully!");
+            res.redirect("/");
+        }
+    });
 });
 
 //Work route
 app.get("/work", function(req, res){
-
     res.render("list", {
         listTitle: "Work List",
         newListItems: workItems
@@ -94,7 +112,6 @@ app.get("/work", function(req, res){
 });
 
 app.post("/work", function(req, res){
-
     let item = req.body.newItem;
     workItems.push(item);
     res.redirect("/work");
