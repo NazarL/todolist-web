@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const date = require(__dirname + "/date.js");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const app = express();
 app.use(express.static("public"));
@@ -114,7 +115,7 @@ app.post("/delete", function(req, res){
 
 //Create dynamic route
 app.get("/:customListName", function(req, res) {
-    const customListName = req.params.customListName;
+    const customListName = _.capitalize(req.params.customListName);
 
     //findOne - gives an object back
     List.findOne({name: customListName}, function(err, foundList) {
