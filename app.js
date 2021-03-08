@@ -87,40 +87,29 @@ app.post("/", function(req, res){
                 res.redirect("/" + listName);
             }
         });
-
     }
 });
 
 app.post("/delete", function(req, res){
     const checkedItemId = req.body.checkbox;
+    const listName = req.body.listName;
 
-    //[ToDo] find new delete method to remove deprecation warning
-    Item.findByIdAndRemove(checkedItemId, function(err) {
-        if (!err) {
-            console.log("Item deleted successfully!");
-            res.redirect("/");
-        }
-    });
-});
-
-//Work route
-app.get("/work", function(req, res){
-    res.render("list", {
-        listTitle: "Work List",
-        newListItems: workItems
-    });
-
-});
-
-app.post("/work", function(req, res){
-    let item = req.body.newItem;
-    workItems.push(item);
-    res.redirect("/work");
-
-})
-
-app.listen(process.env.PORT || 3000, function(){
-    console.log("Server started on port 3000.");
+    if (listName === "Today") {
+        //[ToDo] find new delete method to remove deprecation warning
+        Item.findByIdAndRemove(checkedItemId, function(err) {
+            if (!err) {
+                console.log("Item deleted successfully!");
+                res.redirect("/");
+            }
+        });
+    } else {
+        //{$pull: {field: {id: value}}} - pull from the items array by item id
+        List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
+            if (!err) {
+                res.redirect("/" + listName);
+            }
+        });
+    }
 });
 
 //Create dynamic route
@@ -150,4 +139,8 @@ app.get("/:customListName", function(req, res) {
         }
     });
 
+});
+
+app.listen(process.env.PORT || 3000, function(){
+    console.log("Server started on port 3000.");
 });
