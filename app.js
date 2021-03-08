@@ -9,7 +9,8 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
 
-mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://admin-nazar:Pass970584@cluster0.jtfkj.mongodb.net/todolistDB", {useNewUrlParser: true, useUnifiedTopology: true});
+//mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true, useUnifiedTopology: true});
 
 //List with default items
 const itemsSchema = { name: String};
