@@ -55,19 +55,6 @@ app.get("/", function(req, res){
         }
     })
 
-    //const day = date.getDate();
-
-    //should render all variables simultaneously
-    // res.render("list", {
-    //     listTitle: "Today",
-    //     newListItems: items
-    // });  
-
-    // res.render("list", {
-    //     listTitle: day,
-    //     newListItems: items
-    // });  
-
 });
 
 app.post("/", function(req, res){
